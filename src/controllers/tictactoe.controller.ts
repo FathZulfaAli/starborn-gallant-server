@@ -36,7 +36,7 @@ export default class TicTacToeController {
 				},
 				{
 					headers: {
-						Authorization: `Bearer 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`,
+						Authorization: `Bearer ${process.env.PRIVATE_KEY}`,
 					},
 				}
 			);
