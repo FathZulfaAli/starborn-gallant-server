@@ -1,6 +1,10 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
+import * as anchor from "@project-serum/anchor";
 import { TicTacToeRouter } from "./routers/tictactoe.router";
+import "dotenv/config";
+import { Connection } from "@solana/web3.js";
+import { RewardRouter } from "./routers/reward.router";
 
 const PORT = 8000;
 
@@ -31,8 +35,10 @@ export default class App {
 
 	private routes(): void {
 		const ticTacToeRouter = new TicTacToeRouter();
+		const rewardRouter = new RewardRouter();
 
 		this.app.use("/tictactoe", ticTacToeRouter.getRouter());
+		this.app.use("/reward", rewardRouter.getRouter());
 	}
 
 	public start(): void {

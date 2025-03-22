@@ -1,4 +1,4 @@
-import { Application, Router } from "express";
+import { Router } from "express";
 import TicTacToeController from "../controllers/tictactoe.controller";
 
 export class TicTacToeRouter {
