@@ -1,5 +1,5 @@
 import { Router } from "express";
-import RewardController from "../controllers/reward.controller";
+import RewardController from "../controllers/reward/reward.controller";
 
 export class RewardRouter {
 	private router: Router;

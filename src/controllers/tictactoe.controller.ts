@@ -2,11 +2,7 @@ import axios from "axios";
 import { Request, Response, NextFunction } from "express";
 
 export default class TicTacToeController {
-	async nextAiMove(
-		req: Request,
-		res: Response,
-		next: NextFunction
-	): Promise<void> {
+	async nextAiMove(req: Request, res: Response, next: NextFunction): Promise<void> {
 		try {
 			const { aiRole, currentBoard, playerRole } = req.body;
 
@@ -41,13 +37,13 @@ export default class TicTacToeController {
 			);
 			const data = await response.data.choices[0].message.content;
 			const formated = data.replace(/```/g, "").trim();
-			console.log("ini response", data);
-			console.log("ini formated", formated);
+			// console.log("ini response", data);
+			// console.log("ini formated", formated);
 
 			res.status(200).send({ nextBoard: formated });
 		} catch (error) {
 			console.error("AI move error:", error);
-			next(error); // Forward error to the global error handler
+			next(error);
 		}
 	}
 }
