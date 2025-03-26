@@ -4,6 +4,7 @@ import { TicTacToeRouter } from "./routers/tictactoe.router";
 import "dotenv/config";
 import { RewardRouter } from "./routers/reward.router";
 import { SauceRouter } from "./routers/sauce.router";
+import { dbconnect } from "./helpers/db.connect";
 
 const PORT = 8000;
 
@@ -15,6 +16,7 @@ export default class App {
 		this.configure();
 		this.routes();
 		this.errorHandle();
+		this.db();
 	}
 
 	private configure() {
@@ -24,12 +26,10 @@ export default class App {
 	}
 
 	private errorHandle(): void {
-		this.app.use(
-			(err: Error, req: Request, res: Response, next: NextFunction) => {
-				console.log("ERROR :", err.stack);
-				res.status(500).send(err.message);
-			}
-		);
+		this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+			console.log("ERROR :", err.stack);
+			res.status(500).send(err.message);
+		});
 	}
 
 	private routes(): void {
@@ -40,6 +40,10 @@ export default class App {
 		this.app.use("/tictactoe", ticTacToeRouter.getRouter());
 		this.app.use("/reward-airdrop", rewardRouter.getRouter());
 		this.app.use("/sauce", sauceRouter.getRouter());
+	}
+
+	private async db(): Promise<void> {
+		dbconnect();
 	}
 
 	public start(): void {

@@ -24,7 +24,6 @@ export async function txExecutor(destination: string, amount: number) {
 		feePayer: signer,
 		version: "legacy",
 		latestBlockhash,
-		// TODO: Change the amount to be rewarded
 		amount: amount,
 		authority: signer,
 		destination: address(destination),

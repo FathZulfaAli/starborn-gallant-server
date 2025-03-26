@@ -7,11 +7,11 @@ export default class SauceController {
 			const { wallet, action } = req.body;
 
 			const rewardMapping: Record<string, number> = {
-				ttt_w: 10,
-				ttt_ws2: 20,
-				ttt_ws3: 30,
-				ttt_ws4: 40,
-				ttt_ws5: 50,
+				ttt_w: 500_000_000,
+				ttt_ws2: 750_000_000,
+				ttt_ws3: 1_000_000_000,
+				ttt_ws4: 2_000_000_000,
+				ttt_ws5: 3_000_000_000,
 			};
 
 			if (!wallet || !(action in rewardMapping)) throw new Error("Invalid data");
@@ -22,7 +22,7 @@ export default class SauceController {
 				wallet,
 				rewardMap: action,
 				rewardAmount,
-				nonce: Math.random().toString(36).substring(7),
+				nonce: Math.random().toString(36).substring(2, 10),
 			};
 
 			const token = jwt.sign(payload, process.env.JWT_SECRET!);

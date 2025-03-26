@@ -11,9 +11,8 @@ export class RewardRouter {
 		this.initializeRoutes();
 	}
 
-	// TODO: change the route name
 	private initializeRoutes(): void {
-		this.router.post("/tes", this.rewardController.rewardPlayer);
+		this.router.post("/sent", this.rewardController.rewardPlayer);
 	}
 
 	getRouter(): Router {
