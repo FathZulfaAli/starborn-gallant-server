@@ -1,28 +1,26 @@
 import { Request, Response, NextFunction } from "express";
 import { txExecutor } from "./tx.executor";
 import { jwtVerifier } from "./jwt.verifier";
-import { client } from "../../helpers/db.connect";
+import { nonceCollection } from "../../helpers/db.connect";
+import { ApiError } from "../../utils/ApiError";
 
 export default class RewardController {
 	rewardPlayer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
 		try {
 			const { playerPubKey, token } = req.body;
-			const db = client.db("Nonce");
-			const collection = db.collection("Stb-nonce");
 
-			if (!playerPubKey || !token) throw new Error("Invalid data");
+			if (!playerPubKey || !token) throw new ApiError(400, "Missing required fields");
 
 			const decoded = await jwtVerifier(token);
 
-			if (typeof decoded === "string") throw new Error("Invalid token payload");
+			if (typeof decoded === "string") throw new ApiError(400, "Invalid token");
 
-			if (decoded.wallet !== playerPubKey) throw new Error("Invalid wallet");
+			if (decoded.wallet !== playerPubKey) throw new ApiError(400, "Invalid wallet");
 
-			const checkNonce = await collection.findOne({ nonce: decoded.nonce });
+			if (await nonceCollection.findOne({ nonce: decoded.nonce }))
+				throw new ApiError(400, "Fraud detected, try again later");
 
-			if (checkNonce) throw new Error("Fraud detected, try again later");
-
-			await collection.insertOne({
+			await nonceCollection.insertOne({
 				wallet: decoded.wallet,
 				amount: decoded.rewardAmount,
 				nonce: decoded.nonce,
@@ -32,7 +30,7 @@ export default class RewardController {
 			const tx = await txExecutor(decoded.wallet, decoded.rewardAmount);
 			res.status(200).send({ link: tx.explolerLink });
 		} catch (error) {
-			console.error("Rewarding system error:", error);
+			// console.error("Rewarding system error:", error);
 			next(error);
 		}
 	};

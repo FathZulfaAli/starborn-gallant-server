@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { ApiError } from "../utils/ApiError";
 
 export default class SauceController {
-	async getRecipe(req: Request, res: Response, next: NextFunction): Promise<void> {
+	async getRecipe(req: Request, res: Response, next: NextFunction) {
 		try {
 			const { wallet, action } = req.body;
 
@@ -14,7 +15,7 @@ export default class SauceController {
 				ttt_ws5: 3_000_000_000,
 			};
 
-			if (!wallet || !(action in rewardMapping)) throw new Error("Invalid data");
+			if (!wallet || !(action in rewardMapping)) throw new ApiError(400, "Invalid data");
 
 			const rewardAmount = rewardMapping[action];
 
@@ -29,7 +30,7 @@ export default class SauceController {
 
 			res.status(200).send({ token });
 		} catch (error) {
-			console.error("Get recipe error:", error);
+			// console.error("Get recipe error:", error);
 			next(error);
 		}
 	}

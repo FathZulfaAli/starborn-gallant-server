@@ -18,3 +18,6 @@ export async function dbconnect() {
 		console.log(error);
 	}
 }
+
+const db = client.db("Nonce");
+export const nonceCollection = db.collection("Stb-nonce");

@@ -5,6 +5,7 @@ import "dotenv/config";
 import { RewardRouter } from "./routers/reward.router";
 import { SauceRouter } from "./routers/sauce.router";
 import { dbconnect } from "./helpers/db.connect";
+import { ApiError } from "./utils/ApiError";
 
 const PORT = 8000;
 
@@ -26,9 +27,11 @@ export default class App {
 	}
 
 	private errorHandle(): void {
-		this.app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-			console.log("ERROR :", err.stack);
-			res.status(500).send(err.message);
+		this.app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
+			if (err instanceof ApiError) {
+				res.status(err.statusCode).json({ error: err.message });
+			}
+			res.status(500).send("Internal Server Error");
 		});
 	}
 

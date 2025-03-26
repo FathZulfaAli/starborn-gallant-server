@@ -6,14 +6,15 @@ export default class TicTacToeController {
 		try {
 			const { aiRole, currentBoard, playerRole } = req.body;
 
-			const response = await axios.post(
-				"https://openrouter.ai/api/v1/chat/completions",
-				{
-					model: "google/gemini-2.0-flash-thinking-exp-1219:free",
-					messages: [
-						{
-							role: "system",
-							content: `You are a defensive Tic Tac Toe AI, playing strictly as ${aiRole}.
+			const response = await axios
+				.post(
+					"https://openrouter.ai/api/v1/chat/completions",
+					{
+						model: "google/gemini-2.0-flash-thinking-exp-1219:free",
+						messages: [
+							{
+								role: "system",
+								content: `You are a defensive Tic Tac Toe AI, playing strictly as ${aiRole}.
                         Your only goal is to prevent the opponent O from winning at all cost.
                         Before making a move, check if the opponent is one move away from winning using these win patterns:
                         [[0, 1, 2], [3, 4, 5], [6, 7, 8],[0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]]
@@ -26,15 +27,18 @@ export default class TicTacToeController {
                         No extra text—just output the updated board.
                         this is the current board ${currentBoard}
                         Your next move is ?`,
-						},
-					],
-				},
-				{
-					headers: {
-						Authorization: `Bearer ${process.env.PRIVATE_KEY}`,
+							},
+						],
 					},
-				}
-			);
+					{
+						headers: {
+							Authorization: `Bearer ${process.env.PRIVATE_KEY}`,
+						},
+					}
+				)
+				.catch((error) => {
+					throw new Error("AI move error", error);
+				});
 			const data = await response.data.choices[0].message.content;
 			const formated = data.replace(/```/g, "").trim();
 			// console.log("ini response", data);
@@ -42,7 +46,7 @@ export default class TicTacToeController {
 
 			res.status(200).send({ nextBoard: formated });
 		} catch (error) {
-			console.error("AI move error:", error);
+			// console.error("AI move error:", error);
 			next(error);
 		}
 	}
