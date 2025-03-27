@@ -6,6 +6,8 @@ import { RewardRouter } from "./routers/reward.router";
 import { SauceRouter } from "./routers/sauce.router";
 import { dbconnect } from "./helpers/db.connect";
 import { ApiError } from "./utils/ApiError";
+import { AuthRouter } from "./routers/auth.router";
+import { headCheck } from "./middleware/headCheck";
 
 const PORT = 8000;
 
@@ -39,10 +41,12 @@ export default class App {
 		const ticTacToeRouter = new TicTacToeRouter();
 		const rewardRouter = new RewardRouter();
 		const sauceRouter = new SauceRouter();
+		const authRouter = new AuthRouter();
 
-		this.app.use("/tictactoe", ticTacToeRouter.getRouter());
-		this.app.use("/reward-airdrop", rewardRouter.getRouter());
-		this.app.use("/sauce", sauceRouter.getRouter());
+		this.app.use("/tictactoe", headCheck, ticTacToeRouter.getRouter());
+		this.app.use("/reward-airdrop", headCheck, rewardRouter.getRouter());
+		this.app.use("/sauce", headCheck, sauceRouter.getRouter());
+		this.app.use("/package", headCheck, authRouter.getRouter());
 	}
 
 	private async db(): Promise<void> {

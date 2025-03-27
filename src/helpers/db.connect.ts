@@ -2,7 +2,7 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 
 const uri = process.env.MONGODB_URL;
 
-export const client = new MongoClient(uri!, {
+const client = new MongoClient(uri!, {
 	serverApi: {
 		version: ServerApiVersion.v1,
 		strict: true,
@@ -19,5 +19,6 @@ export async function dbconnect() {
 	}
 }
 
-const db = client.db("Nonce");
-export const nonceCollection = db.collection("Stb-nonce");
+const db = client.db("gallant-database");
+export const nonceCollection = db.collection("used-nonce");
+export const usersData = db.collection("registered-user");
