@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Request, Response, NextFunction } from "express";
+import "dotenv/config";
 
 export default class TicTacToeController {
 	async nextAiMove(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -10,7 +11,7 @@ export default class TicTacToeController {
 				.post(
 					"https://openrouter.ai/api/v1/chat/completions",
 					{
-						model: "google/gemini-2.0-flash-thinking-exp-1219:free",
+						model: "google/gemini-2.0-flash-exp:free",
 						messages: [
 							{
 								role: "system",
@@ -37,7 +38,11 @@ export default class TicTacToeController {
 					}
 				)
 				.catch((error) => {
-					throw new Error("AI move error", error);
+					console.error(
+						"Error during AI move request:",
+						error.response?.data || error.message || error
+					);
+					throw new Error("AI move error");
 				});
 			const data = await response.data.choices[0].message.content;
 			const formated = data.replace(/```/g, "").trim();
@@ -46,7 +51,7 @@ export default class TicTacToeController {
 
 			res.status(200).send({ nextBoard: formated });
 		} catch (error) {
-			// console.error("AI move error:", error);
+			console.error("AI move error:", error);
 			next(error);
 		}
 	}

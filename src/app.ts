@@ -34,6 +34,9 @@ export default class App {
 				res.status(err.statusCode).json({ error: err.message });
 			}
 			res.status(500).send("Internal Server Error");
+			// else {
+			// 	res.status(500).json({ error: "Internal Server Error", details: err });
+			// }
 		});
 	}
 
